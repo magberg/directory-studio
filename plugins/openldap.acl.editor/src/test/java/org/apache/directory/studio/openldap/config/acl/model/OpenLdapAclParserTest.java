@@ -31,8 +31,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import antlr.RecognitionException;
-
 import org.apache.directory.studio.openldap.config.acl.model.AclAttribute;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

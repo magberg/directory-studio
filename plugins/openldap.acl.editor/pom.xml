@@ -29,32 +29,10 @@
   <packaging>eclipse-plugin</packaging>
   <description/>
 
-  <dependencies>
-    <dependency>
-      <groupId>antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <version>${antlr.version}</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
+  <dependencies/>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>antlr-maven-plugin</artifactId>
-        <configuration>
-          <grammars>*.g</grammars>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+    <plugins/>
   </build>
 </project>
 

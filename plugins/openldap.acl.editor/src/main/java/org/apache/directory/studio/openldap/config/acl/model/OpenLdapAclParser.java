@@ -23,12 +23,6 @@ package org.apache.directory.studio.openldap.config.acl.model;
 import java.io.StringReader;
 import java.text.ParseException;
 
-import antlr.CharBuffer;
-import antlr.LexerSharedInputState;
-import antlr.RecognitionException;
-import antlr.TokenStreamException;
-
-
 /**
  * A reusable wrapper around the antlr generated parser for an OpenLDAP ACL. The grammar 
  * to parse is the following :
@@ -74,20 +68,11 @@ import antlr.TokenStreamException;
  */
 public class OpenLdapAclParser
 {
-    /** the antlr generated parser being wrapped */
-    private AntlrAclParser parser;
-
-    /** the antlr generated lexer being wrapped */
-    private AntlrAclLexer lexer;
-
-
     /**
      * Creates an OpenLDAP ACL parser.
      */
     public OpenLdapAclParser()
     {
-        this.lexer = new AntlrAclLexer( new StringReader( "" ) );
-        this.parser = new AntlrAclParser( lexer );
     }
 
 
@@ -100,24 +85,6 @@ public class OpenLdapAclParser
      */
     public synchronized AclItem parse( String s ) throws ParseException
     {
-        try
-        {
-            LexerSharedInputState state = new LexerSharedInputState( new CharBuffer( new StringReader( s ) ) );
-            this.lexer.setInputState( state );
-            this.parser.getInputState().reset();
-
-            parser.parse();
-            
-            return parser.getAclItem();
-        }
-        catch ( TokenStreamException e )
-        {
-            throw new ParseException( "Unable to read ACL: " + e.getMessage(), -1 );
-        }
-        catch ( RecognitionException e )
-        {
-            throw new ParseException( "Unable to read ACL: " + e.getMessage() + " - [Line:" + e.getLine()
-                + " - Column:" + e.getColumn() + "]", e.getColumn() );
-        }
+        return null;
     }
 }

@@ -246,13 +246,6 @@ http://www.apache.org/licenses/
          unpack="false"/>
 
    <plugin
-         id="org.apache.servicemix.bundles.antlr"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.servicemix.bundles.xpp3"
          download-size="0"
          install-size="0"

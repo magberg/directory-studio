@@ -32,32 +32,10 @@
   <packaging>bundle</packaging>
   <description/>
 
-  <dependencies>
-    <dependency>
-      <groupId>antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <version>${antlr.version}</version>
-    </dependency>
-  </dependencies> 
+  <dependencies/>
   
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>antlr-maven-plugin</artifactId>
-        <configuration>
-          <grammars>*.g</grammars>
-        </configuration>
-        
-        <executions>
-          <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-     
       <!-- MANIFEST.MF Generation -->
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -71,9 +49,6 @@
             <Eclipse-LazyStart>true</Eclipse-LazyStart>
             <Bundle-Activator>org.apache.directory.studio.openldap.config.acl.OpenLdapAclEditorPlugin</Bundle-Activator>
             <Import-Package>
- antlr,
- antlr.collections,
- antlr.collections.impl,
  org.slf4j
             </Import-Package>
             <Require-Bundle>
