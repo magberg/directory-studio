@@ -104,7 +104,7 @@
     <org.apache.mina.bundleversion>2.1.13</org.apache.mina.bundleversion>
     <org.apache.poi.version>5.5.1</org.apache.poi.version>
     <org.apache.poi.bundleversion>5.5.1</org.apache.poi.bundleversion>
-    <org.apache.xmlgraphics.fop.version>2.9</org.apache.xmlgraphics.fop.version>
+    <org.apache.xmlgraphics.fop.version>2.11</org.apache.xmlgraphics.fop.version>
     <org.bouncycastle.version>1.70</org.bouncycastle.version>
     <org.slf4j.version>1.7.36</org.slf4j.version>
     <org.slf4j.bundleversion>1.7.36</org.slf4j.bundleversion>
