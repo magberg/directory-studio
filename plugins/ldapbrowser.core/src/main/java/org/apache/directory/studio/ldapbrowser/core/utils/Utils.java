@@ -680,11 +680,17 @@ public class Utils
      */
     public static CharSequenceTranslator createPostalAddressDecoder( String separator )
     {
-        return new LookupTranslator( Map.of(
-            "$", separator, //$NON-NLS-1$
-            "\\24", "$", //$NON-NLS-1$ //$NON-NLS-2$
-            "\\5C", "\\", //$NON-NLS-1$ //$NON-NLS-2$
-            "\\5c", "\\" ) ); //$NON-NLS-1$ //$NON-NLS-2$
+        Map<CharSequence, CharSequence> translateMap = new LinkedHashMap() 
+            {
+                {
+                    put( "$", separator );
+                    put( "\24", "$" );
+                    put( "\5C", "\\" );
+                    put( "\5c", "\\" );
+                }
+            };
+
+        return new LookupTranslator( translateMap );
     }
 
 
@@ -696,9 +702,15 @@ public class Utils
      */
     public static CharSequenceTranslator createPostalAddressEncoder( String separator )
     {
-        return new LookupTranslator( Map.of(
-            "\\", "\\5C", //$NON-NLS-1$ //$NON-NLS-2$
-            "$", "\\24", //$NON-NLS-1$ //$NON-NLS-2$
-            separator, "$" ) ); //$NON-NLS-1$
+        Map<CharSequence, CharSequence> translateMap = new LinkedHashMap() 
+            {
+                {
+                    put( "\\", "\5C" );
+                    put( "$", "\24" );
+                    put( separator, "$" );
+                }
+            };
+
+        return new LookupTranslator( translateMap );
     }
 }
