@@ -17,5 +17,10 @@
 # under the License.
 
 # This script do a full build of Studio (including the MANIFEST generation and the P2 local repository construction)
+
+# Set the debug session. Open a remote Java application on locahost and port 5005, once the breakpoint has been set
+# on the targetted maven plugin
+export MAVEN_OPTS="-Xdebug -Djava.compile=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"
+
 mvn -f pom-first.xml clean install -Djdk.xml.maxGeneralEntitySizeLimit=0 -Djdk.xml.totalEntitySizeLimit=0 
 mvn clean install -Djdk.xml.maxGeneralEntitySizeLimit=0 -Djdk.xml.totalEntitySizeLimit=0 -Djdk.xml.entityExpansionLimit=0
