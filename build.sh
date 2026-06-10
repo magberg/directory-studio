@@ -17,9 +17,37 @@
 # under the License.
 
 # This script do a full build of Studio (including the MANIFEST generation and the P2 local repository construction)
+#
+# Usage: ./build.sh [--datestamp] [--sign <key>]
+#   --datestamp    rename SNAPSHOT artifacts with a YYYYMMDD date stamp
+#   --sign <key>   codesign macOS app bundles with the given identity (passed to createDMG.sh)
+
+datestamp=0
+sign_key=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --datestamp)
+            datestamp=1
+            shift
+            ;;
+        -s|--sign)
+            if [ -z "$2" ]; then
+                echo "Error: $1 requires a key argument" >&2
+                exit 1
+            fi
+            sign_key="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1" >&2
+            echo "Usage: $0 [--datestamp] [--sign <key>]" >&2
+            exit 1
+            ;;
+    esac
+done
 
 # Building requires Java 25 or 17
-if [ uname -o =="Darwin" ]; then
+if [ "$(uname -s)" = "Darwin" ]; then
     if /usr/libexec/java_home -v 25 -a $(uname -m) -F 2>/dev/null; then
         export JAVA_HOME=$(/usr/libexec/java_home -v 25 -a $(uname -m) -F | head -n1)
     elif /usr/libexec/java_home -v 17 -a $(uname -m) -F 2>/dev/null; then
@@ -32,17 +60,20 @@ fi
 mvn -f pom-first.xml clean install 
 mvn -f pom.xml clean install -Djdk.xml.maxGeneralEntitySizeLimit=0 -Djdk.xml.totalEntitySizeLimit=0 -Djdk.xml.entityExpansionLimit=0
 
-if [[ $1 =~ --datestamp ]] ; then
-    for f in product/target/products/ApacheDirectoryStudio-*-SNAPSHOT-*; do 
-        mv -v $f ${f/-SNAPSHOT/.v$(date +%Y%m%d)}; 
+if [ "$datestamp" = "1" ]; then
+    for f in product/target/products/ApacheDirectoryStudio-*-SNAPSHOT-*; do
+        mv -v "$f" "$(echo "$f" | sed "s/-SNAPSHOT/.v$(date +%Y%m%d)/")"
     done
 fi
 
 # build disk images for macOS
 cd installers/macos/src/dmg/
-# This creates unsigned DMGs, users might have to approve running/installing Studio
-# add --sign <key> to codesign the app bundles
-./createDMG.sh
+# Without --sign this creates unsigned DMGs, users might have to approve running/installing Studio
+if [ -n "$sign_key" ]; then
+    ./createDMG.sh --sign "$sign_key"
+else
+    ./createDMG.sh
+fi
 cd -
 
 # print build artifacts
