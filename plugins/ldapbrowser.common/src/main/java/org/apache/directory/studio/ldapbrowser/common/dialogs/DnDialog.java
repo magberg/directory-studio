@@ -62,10 +62,7 @@ public class DnDialog extends Dialog
     /** The connection. */
     private IBrowserConnection connection;
 
-    /** The dn (single-select mode). */
-    private Dn dn;
-
-    /** The DNs (multi-select mode). */
+    /** One dn (single-select mode) or multiple DNs (multi-select mode). */
     private Dn[] dns;
 
     /** True when the dialog operates in multi-select mode. */
@@ -90,7 +87,7 @@ public class DnDialog extends Dialog
         this.title = title;
         this.description = description;
         this.connection = connection;
-        this.dn = dn;
+        this.dns = dn != null ? new Dn[]{ dn } : new Dn[0];
         this.multiSelect = false;
     }
 
@@ -134,13 +131,9 @@ public class DnDialog extends Dialog
      */
     protected void okPressed()
     {
-        if ( multiSelect )
+        dns = entryWidget.getDns();
+        if ( !multiSelect )
         {
-            dns = entryWidget.getDns();
-        }
-        else
-        {
-            dn = entryWidget.getDn();
             entryWidget.saveDialogSettings();
         }
         super.okPressed();
@@ -186,7 +179,7 @@ public class DnDialog extends Dialog
         }
         else
         {
-            entryWidget = new EntryWidget( connection, dn );
+            entryWidget = new EntryWidget( connection, dns.length == 0 ? null : dns[0] );
         }
 
         entryWidget.addWidgetModifyListener( new WidgetModifyListener()
@@ -231,7 +224,7 @@ public class DnDialog extends Dialog
      */
     public Dn getDn()
     {
-        return dn;
+        return dns.length == 0 ? null : dns[0];
     }
 
 
