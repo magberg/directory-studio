@@ -52,18 +52,27 @@ import org.eclipse.swt.widgets.Text;
  * +---------------------------------------------+
  * | ACL Attribute                               |
  * | .-----------------------------------------. |
- * | | (o) Attribute                           | |
- * | | (o) Entry                               | |
- * | | (o) Children                            | |
- * | | (o) ObjectClass                         | |
- * | | (o) ObjectClass exclusion               | |
+ * | | (o) Attribute                           | |<-- attributeCheckbox
+ * | | (o) Entry                               | |<-- entryCheckbox
+ * | | (o) Children                            | |<-- childrenCheckbox
+ * | | (o) ObjectClass                         | |<-- objectClassCheckbox
+ * | | (o) ObjectClass exclusion               | |<-- objectClassExclusionCheckbox
  * | |                                         | |
- * | | Value : [/////////////////////////////] | |
+ * | | Value : [/////////////////////////////] | |<-- attributevalueText
  * | '-----------------------------------------' |
  * |                                             |
  * |  (Cancel)                             (OK)  |
  * +---------------------------------------------+
  * </pre>
+ * 
+ * The following rules applied:
+ * <li>
+ *   <ul>If the Attribute or ObjectClass</ul>
+ *   <ul></ul>
+ *   <ul></ul>
+ *   <ul></ul>
+ *   <ul></ul>
+ * </li>
  * @author <a href="mailto:dev@directory.apache.org">Apache Directory Project</a>
  */
 public class AclAttributeDialog extends AddEditDialog<AclAttributeWrapper>
@@ -93,6 +102,30 @@ public class AclAttributeDialog extends AddEditDialog<AclAttributeWrapper>
     /** A flag set when we clear the AttributeValue text */
     private boolean clearText;
     
+    /**
+     * Disable the OK button, we need some attribute Value
+     */
+    private void disableOk()
+    {
+        // Clear the AttributeValue Text and disable it
+        clearText = true;
+        attributevalueText.setText( "" );
+        attributevalueText.setEnabled( true );
+        getButton( IDialogConstants.OK_ID ).setEnabled( false );
+    }
+
+    /**
+     * Disable the OK button, we need some attribute Value
+     */
+    private void enableOk( String name )
+    {
+        // Clear the AttributeValue Text and disable it
+        clearText = true;
+        attributevalueText.setText( "" );
+        attributevalueText.setEnabled( false );
+        getEditedElement().getAclAttribute().setName( name );
+        getButton( IDialogConstants.OK_ID ).setEnabled( true );
+    }
 
     /** A listener for the AttributeCheckBox */
     private SelectionListener attributeCheckboxListener = new SelectionAdapter()
@@ -104,11 +137,7 @@ public class AclAttributeDialog extends AddEditDialog<AclAttributeWrapper>
             
             if ( selection.getSelection() )
             {
-                // Clear the AttributeValue Text and disable it
-                clearText = true;
-                attributevalueText.setText( "" );
-                attributevalueText.setEnabled( true );
-                getButton( IDialogConstants.OK_ID ).setEnabled( false );
+                disableOk();
             }
         }
     };
@@ -123,12 +152,7 @@ public class AclAttributeDialog extends AddEditDialog<AclAttributeWrapper>
             
             if ( selection.getSelection() )
             {
-                // Clear the AttributeValue Text and disable it
-                clearText = true;
-                attributevalueText.setText( "" );
-                attributevalueText.setEnabled( false );
-                getEditedElement().getAclAttribute().setName( "entry" );
-                getButton( IDialogConstants.OK_ID ).setEnabled( true );
+                enableOk( "entry" );
             }
         }
     };
@@ -143,12 +167,7 @@ public class AclAttributeDialog extends AddEditDialog<AclAttributeWrapper>
             
             if ( selection.getSelection() )
             {
-                // Clear the AttributeValue Text and disable it
-                clearText = true;
-                attributevalueText.setText( "" );
-                attributevalueText.setEnabled( false );
-                getEditedElement().getAclAttribute().setName( "children" );
-                getButton( IDialogConstants.OK_ID ).setEnabled( true );
+                enableOk( "children" );
             }
         }
     };
@@ -163,11 +182,7 @@ public class AclAttributeDialog extends AddEditDialog<AclAttributeWrapper>
             
             if ( selection.getSelection() )
             {
-                // Clear the AttributeValue Text and enable it
-                clearText = true;
-                attributevalueText.setText( "" );
-                attributevalueText.setEnabled( true );
-                getButton( IDialogConstants.OK_ID ).setEnabled( false );
+                disableOk();
             }
         }
     };
@@ -182,11 +197,7 @@ public class AclAttributeDialog extends AddEditDialog<AclAttributeWrapper>
             
             if ( selection.getSelection() )
             {
-                // Clear the AttributeValue Text and enable it
-                clearText = true;
-                attributevalueText.setText( "" );
-                attributevalueText.setEnabled( true );
-                getButton( IDialogConstants.OK_ID ).setEnabled( false );
+                disableOk();
             }
         }
     };
@@ -201,6 +212,7 @@ public class AclAttributeDialog extends AddEditDialog<AclAttributeWrapper>
             if ( clearText )
             {
                 clearText = false;
+                
                 return;
             }
             
