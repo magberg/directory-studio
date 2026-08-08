@@ -29,7 +29,7 @@
 
   <groupId>org.apache.directory.studio</groupId>
   <artifactId>org.apache.directory.studio.parent</artifactId>
-  <version>2.0.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <name>Apache Directory Studio Parent</name>
   <description>Apache Directory Studio is a complete directory tooling platform intended to be used with any LDAP server however it is particularly designed for use with the Apache Directory Server.</description>
   <packaging>pom</packaging>
@@ -57,6 +57,18 @@
 
   <properties>
     <!--
+      Fork identity (stage 0). Maven/OSGi artifact version stays 3.0.0-SNAPSHOT until
+      a coordinated bump (planned 2.1.0-SNAPSHOT at stage 6). Do not invent non-OSGi
+      qualifiers like "fork" inside Bundle-Version.
+    -->
+    <studio.fork.id>modernize</studio.fork.id>
+    <studio.fork.label>modernize fork</studio.fork.label>
+    <studio.fork.upstream>https://github.com/apache/directory-studio</studio.fork.upstream>
+    <studio.fork.repo>https://github.com/magberg/directory-studio</studio.fork.repo>
+    <studio.fork.target.java>25</studio.fork.target.java>
+    <studio.fork.baseline.date>2026-08-04</studio.fork.baseline.date>
+
+    <!--
       Set default of various URLs for deployment repositories/paths/....
       Can be overwritten in the settings.xml
     -->
@@ -66,36 +78,39 @@
     <!-- Disable Java 8 Javadoc linter -->
     <doclint>none</doclint>
 
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <!-- Stage 2: Java 25 + Tycho 5.x (Eclipse 2025-12 / 4.37) -->
+    <maven.compiler.release>25</maven.compiler.release>
+    <maven.compiler.source>25</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
 
-    <tycho.version>2.3.0</tycho.version>
+    <tycho.version>5.0.3</tycho.version>
+    <eclipse.platform.repo>https://download.eclipse.org/eclipse/updates/4.37</eclipse.platform.repo>
+    <eclipse.orbit.repo>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/latest</eclipse.orbit.repo>
+    <swtbot.repo>https://download.eclipse.org/technology/swtbot/snapshots</swtbot.repo>
 
     <!-- Set versions for dependencies -->
     <antlr.version>2.7.7</antlr.version>
     <antlr.bundleversion>2.7.7</antlr.bundleversion>
     <junit.platform.version>1.10.2</junit.platform.version>
     <junit.jupiter.version>5.10.2</junit.jupiter.version>
-    <log4j.log4j.version>1.2.17</log4j.log4j.version>
-    <log4j.log4j.bundleversion>1.2.17</log4j.log4j.bundleversion>
     <com.github.ben-manes.caffeine.version>2.7.0</com.github.ben-manes.caffeine.version>
     <com.github.ben-manes.caffeine.bundleversion>2.7.0</com.github.ben-manes.caffeine.bundleversion>
-    <org.apache.httpcomponents.httpclient.version>4.5.12</org.apache.httpcomponents.httpclient.version>
-    <org.apache.httpcomponents.httpclient.bundleversion>4.5.12</org.apache.httpcomponents.httpclient.bundleversion>
-    <org.apache.httpcomponents.httpcore.version>4.4.13</org.apache.httpcomponents.httpcore.version>
-    <org.apache.httpcomponents.httpcore.bundleversion>4.4.13</org.apache.httpcomponents.httpcore.bundleversion>
-    <org.apache.commons.codec.version>1.15</org.apache.commons.codec.version>
-    <org.apache.commons.codec.bundleversion>1.15.0</org.apache.commons.codec.bundleversion>
+    <org.apache.httpcomponents.httpclient.version>4.5.14</org.apache.httpcomponents.httpclient.version>
+    <org.apache.httpcomponents.httpclient.bundleversion>4.5.14</org.apache.httpcomponents.httpclient.bundleversion>
+    <org.apache.httpcomponents.httpcore.version>4.4.16</org.apache.httpcomponents.httpcore.version>
+    <org.apache.httpcomponents.httpcore.bundleversion>4.4.16</org.apache.httpcomponents.httpcore.bundleversion>
+    <org.apache.commons.codec.version>1.17.2</org.apache.commons.codec.version>
+    <org.apache.commons.codec.bundleversion>1.17.2</org.apache.commons.codec.bundleversion>
     <org.apache.commons.collections4.version>4.4</org.apache.commons.collections4.version>
     <org.apache.commons.collections4.bundleversion>4.4.0</org.apache.commons.collections4.bundleversion>
-    <org.apache.commons.io.version>2.6</org.apache.commons.io.version>
-    <org.apache.commons.io.bundleversion>2.6.0</org.apache.commons.io.bundleversion>
-    <org.apache.commons.lang3.version>3.12.0</org.apache.commons.lang3.version>
-    <org.apache.commons.lang3.bundleversion>3.12.0</org.apache.commons.lang3.bundleversion>
-    <org.apache.commons.pool.version>2.9.0</org.apache.commons.pool.version>
-    <org.apache.commons.pool.bundleversion>2.9.0</org.apache.commons.pool.bundleversion>
-    <org.apache.commons.text.version>1.9</org.apache.commons.text.version>
-    <org.apache.commons.text.bundleversion>1.9</org.apache.commons.text.bundleversion>
+    <org.apache.commons.io.version>2.18.0</org.apache.commons.io.version>
+    <org.apache.commons.io.bundleversion>2.18.0</org.apache.commons.io.bundleversion>
+    <org.apache.commons.lang3.version>3.17.0</org.apache.commons.lang3.version>
+    <org.apache.commons.lang3.bundleversion>3.17.0</org.apache.commons.lang3.bundleversion>
+    <org.apache.commons.pool.version>2.12.1</org.apache.commons.pool.version>
+    <org.apache.commons.pool.bundleversion>2.12.1</org.apache.commons.pool.bundleversion>
+    <org.apache.commons.text.version>1.13.0</org.apache.commons.text.version>
+    <org.apache.commons.text.bundleversion>1.13.0</org.apache.commons.text.bundleversion>
     <org.apache.directory.api.version>2.1.0</org.apache.directory.api.version>
     <org.apache.directory.api.bundleversion>2.1.0</org.apache.directory.api.bundleversion>
     <org.apache.directory.server.version>2.0.0.AM26</org.apache.directory.server.version>
@@ -104,13 +119,19 @@
     <org.apache.poi.version>5.2.5</org.apache.poi.version>
     <org.apache.poi.bundleversion>5.2.5</org.apache.poi.bundleversion>
     <org.apache.xmlgraphics.fop.version>2.9</org.apache.xmlgraphics.fop.version>
-    <org.bouncycastle.version>1.62</org.bouncycastle.version>
-    <org.slf4j.version>1.7.25</org.slf4j.version>
-    <org.slf4j.bundleversion>1.7.25</org.slf4j.bundleversion>
+    <org.bouncycastle.version>1.85</org.bouncycastle.version>
+    <org.bouncycastle.bundleversion>1.85.0</org.bouncycastle.bundleversion>
+    <org.slf4j.version>1.7.36</org.slf4j.version>
+    <org.slf4j.bundleversion>1.7.36</org.slf4j.bundleversion>
     <org.xpp3.version>1.1.4.c</org.xpp3.version>
     <org.xpp3.bundleversion>1.1.4.c</org.xpp3.bundleversion>
-    <xerces.xercesimpl.version>2.11.0</xerces.xercesimpl.version>
-    <xerces.xercesimpl.bundleversion>2.11.0</xerces.xercesimpl.bundleversion>
+    <xerces.xercesimpl.version>2.12.2</xerces.xercesimpl.version>
+    <xerces.xercesimpl.bundleversion>2.12.2</xerces.xercesimpl.bundleversion>
+    <!-- Minimal stage-2 pin: Eclipse 4.37 dropped javax.servlet; ApacheDS/Jetty still need it -->
+    <javax.servlet.version>3.1.0</javax.servlet.version>
+    <geronimo.stax.version>1.0.1</geronimo.stax.version>
+    <jsvg.version>1.7.2</jsvg.version>
+    <org.hamcrest.version>2.2</org.hamcrest.version>
 
     <!-- Set versions for skins -->
     <skin.version>1.0.2</skin.version>
@@ -121,11 +142,20 @@
     <module>plugins</module>
     <module>helps</module>
     <module>features</module>
-    <module>tests</module>
+    <!-- Integration tests: enable with -Pintegration-tests (Orbit JUnit/SWTBot wiring still WIP on 4.37) -->
     <module>p2repositories</module>
     <module>product</module>
     <module>installers</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>integration-tests</id>
+      <modules>
+        <module>tests</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <build>
     <plugins>
@@ -139,8 +169,9 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-compiler-plugin</artifactId>
         <configuration>
-          <source>11</source>
-          <target>11</target>
+          <source>25</source>
+          <target>25</target>
+          <release>25</release>
         </configuration>
       </plugin>
 
@@ -156,6 +187,7 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
+          <executionEnvironment>JavaSE-25</executionEnvironment>
           <target>
              <artifact>
                 <groupId>org.apache.directory.studio</groupId>
@@ -169,6 +201,12 @@
               <os>linux</os>
               <ws>gtk</ws>
               <arch>x86_64</arch>
+            </environment>
+
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>aarch64</arch>
             </environment>
 
             <environment>
@@ -189,6 +227,34 @@
               <arch>aarch64</arch>
             </environment>
           </environments>
+        </configuration>
+      </plugin>
+
+      <!-- Stage 3: CycloneDX SBOM (advisory noise does not fail the build) -->
+      <plugin>
+        <groupId>org.cyclonedx</groupId>
+        <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>2.9.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>makeAggregateBom</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <projectType>application</projectType>
+          <schemaVersion>1.5</schemaVersion>
+          <includeBomSerialNumber>true</includeBomSerialNumber>
+          <includeCompileScope>true</includeCompileScope>
+          <includeProvidedScope>true</includeProvidedScope>
+          <includeRuntimeScope>true</includeRuntimeScope>
+          <includeSystemScope>true</includeSystemScope>
+          <includeTestScope>false</includeTestScope>
+          <includeLicenseText>false</includeLicenseText>
+          <outputFormat>json</outputFormat>
+          <outputName>bom</outputName>
         </configuration>
       </plugin>
     </plugins>
@@ -219,12 +285,54 @@
           <version>${tycho.version}</version>
         </plugin>
 
+        <!-- m2e only: Tycho packaging binds goals the Cursor/VS Code Java LS has no connector for.
+             ignore avoids phantom Problems; has no effect on CLI Maven/Tycho builds. -->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-bnd-plugin</artifactId>
+                    <versionRange>[5.0.0,)</versionRange>
+                    <goals>
+                      <goal>process</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <!-- eclipse-repository binds maven-clean-plugin:clean to initialize (default-clean-1). -->
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <versionRange>[3.0.0,)</versionRange>
+                    <goals>
+                      <goal>clean</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
+            <release>25</release>
+            <source>25</source>
+            <target>25</target>
           </configuration>
         </plugin>
 

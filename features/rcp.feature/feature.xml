@@ -2,7 +2,7 @@
 <feature
       id="org.apache.directory.studio.rcp.feature"
       label="Apache Directory Studio RCP"
-      version="2.0.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="Apache Software Foundation"
       plugin="org.apache.directory.studio.rcp"
       image="studio.png">
@@ -225,7 +225,7 @@ http://www.apache.org/licenses/
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.io"
+         id="org.apache.commons.commons-io"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -267,7 +267,7 @@ http://www.apache.org/licenses/
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.commons-text"
+         id="org.apache.commons.text"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -302,6 +302,13 @@ http://www.apache.org/licenses/
          unpack="false"/>
 
    <plugin
+         id="bcpkix"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
@@ -309,14 +316,14 @@ http://www.apache.org/licenses/
          unpack="false"/>
 
    <plugin
-         id="javax.xml"
+         id="javax.servlet-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="javax.xml.stream"
+         id="com.github.weisj.jsvg"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -549,7 +556,7 @@ http://www.apache.org/licenses/
          unpack="false"/>
 
    <plugin
-         id="org.slf4j.api"
+         id="slf4j.api"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.directory.studio</groupId>
     <artifactId>org.apache.directory.studio.installers</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   
@@ -32,6 +32,14 @@
   <packaging>pom</packaging>
 
   <description />
+
+  <!--
+    Default: Apple Silicon DMG. Override with -Dstudio.macos.arch=x86_64 or =all
+    Or set env STUDIO_MACOS_ARCH (takes precedence in createDMG.sh).
+  -->
+  <properties>
+    <studio.macos.arch>aarch64</studio.macos.arch>
+  </properties>
 
   <build>
     <plugins>
@@ -93,6 +101,9 @@
             <configuration>
               <executable>./createDMG.sh</executable>
               <workingDirectory>${basedir}/target</workingDirectory>
+              <environmentVariables>
+                <STUDIO_MACOS_ARCH>${studio.macos.arch}</STUDIO_MACOS_ARCH>
+              </environmentVariables>
             </configuration>
           </execution>
         </executions>

@@ -16,13 +16,11 @@
   limitations under the License.
 -->
 <site>
-   <feature url="features/org.apache.directory.studio.rcp.feature_2.0.0.qualifier.jar" id="org.apache.directory.studio.rcp.feature" version="2.0.0.qualifier">
+   <feature url="features/org.apache.directory.studio.rcp.feature_3.0.0.qualifier.jar" id="org.apache.directory.studio.rcp.feature" version="3.0.0.qualifier">
       <category name="org.apache.directory.studio.product"/>
    </feature>
-   <feature url="features/org.apache.directory.studio.nls.feature_2.0.0.qualifier.jar" id="org.apache.directory.studio.nls.feature" version="2.0.0.qualifier">
-      <category name="org.apache.directory.studio.product"/>
-   </feature>
-   <bundle id="org.apache.directory.studio.slf4j-eclipselog" version="2.0.0.qualifier">
+   <!-- nls.feature excluded until Babel language packs match Eclipse 4.37 -->
+   <bundle id="org.apache.directory.studio.slf4j-eclipselog" version="3.0.0.qualifier">
       <category name="org.apache.directory.studio.product"/>
    </bundle>
    <category-def name="org.apache.directory.studio.product" label="Apache Directory Studio Product">

@@ -69,8 +69,12 @@ import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.x509.X509V3CertificateGenerator;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -275,26 +279,22 @@ public class CertificateValidationTest extends AbstractTestBase
         // Generate the self-signed certificate
         BigInteger serialNumber = BigInteger.valueOf( System.currentTimeMillis() );
 
-        X509V3CertificateGenerator certGen = new X509V3CertificateGenerator();
         X500Principal issuerName = new X500Principal( issuerDN );
         X500Principal subjectName = new X500Principal( subjectDN );
-
-        certGen.setSerialNumber( serialNumber );
-        certGen.setIssuerDN( issuerName );
-        certGen.setNotBefore( startDate );
-        certGen.setNotAfter( expiryDate );
-        certGen.setSubjectDN( subjectName );
-        certGen.setPublicKey( publicKey );
-        certGen.setSignatureAlgorithm( "SHA256With" + keyAlgo );
-        certGen.addExtension( Extension.basicConstraints, false, new BasicConstraints( true ) );
-        certGen.addExtension( Extension.extendedKeyUsage, true, new ExtendedKeyUsage(
-            new KeyPurposeId[]
-            { KeyPurposeId.id_kp_clientAuth, KeyPurposeId.id_kp_serverAuth } ) );
 
         try
         {
             PrivateKey signingKey = optionalSigningKey != null ? optionalSigningKey : privateKey;
-            X509Certificate cert = certGen.generate( signingKey, "BC" );
+            ContentSigner signer = new JcaContentSignerBuilder( "SHA256With" + keyAlgo ).setProvider( "BC" )
+                .build( signingKey );
+            X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder( issuerName, serialNumber,
+                startDate, expiryDate, subjectName, publicKey )
+                    .addExtension( Extension.basicConstraints, false, new BasicConstraints( true ) )
+                    .addExtension( Extension.extendedKeyUsage, true, new ExtendedKeyUsage(
+                        new KeyPurposeId[]
+                        { KeyPurposeId.id_kp_clientAuth, KeyPurposeId.id_kp_serverAuth } ) );
+            X509Certificate cert = new JcaX509CertificateConverter().setProvider( "BC" )
+                .getCertificate( certBuilder.build( signer ) );
             entry.put( TlsKeyGenerator.USER_CERTIFICATE_AT, cert.getEncoded() );
         }
         catch ( Exception e )

@@ -37,8 +37,8 @@ import org.apache.directory.api.ldap.model.exception.LdapInvalidDnException;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.name.Rdn;
 import org.apache.directory.studio.common.ui.widgets.BaseWidgetUtils;
-import org.bouncycastle.asn1.ASN1Object;
-import org.bouncycastle.x509.extension.X509ExtensionUtil;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -468,7 +468,7 @@ public class CertificateInfoComposite extends Composite
 
                 try
                 {
-                    ASN1Object extension = X509ExtensionUtil.fromExtensionValue( extensionValueBin );
+                    ASN1Primitive extension = JcaX509ExtensionUtils.parseExtensionValue( extensionValueBin );
                     extensionValue = extension.toString();
                 }
                 catch ( IOException e )

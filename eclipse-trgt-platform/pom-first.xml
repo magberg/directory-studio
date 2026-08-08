@@ -24,23 +24,65 @@
   <parent>
     <groupId>org.apache.directory.studio</groupId>
     <artifactId>org.apache.directory.studio.setup-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <relativePath>../pom-first.xml</relativePath>
   </parent>
 
   <artifactId>org.apache.directory.studio.eclipse-trgt-platform</artifactId>
   <name>Apache Directory Studio Target Platform for Eclipse</name>
-  <packaging>eclipse-target-definition</packaging>
+  <!--
+    pom-first only publishes the local P2 repo of Maven deps. Packaging must NOT be
+    eclipse-target-definition here: Tycho 5 resolves the .target at project-load time,
+    before this module can publish javax.servlet / ApacheDS into target/repository.
+    The main eclipse-trgt-platform/pom.xml keeps eclipse-target-definition.
+  -->
+  <packaging>pom</packaging>
 
   <!-- Step 1: Define the Maven artifacts, that should be added to a P2 repository. -->
   <dependencies>
 
-    <!-- Exclude slf4j, reuse org.slf4j.api provided by Eclipse, see DIRSTUDIO-1068 -->
+    <!-- Provide SLF4J API in local P2 (BSN slf4j.api on modern jars; Eclipse Orbit IU was org.slf4j.api) -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${org.slf4j.version}</version>
-      <scope>provided</scope>
+    </dependency>
+
+    <!-- Eclipse 4.37 no longer ships javax.servlet; required by ApacheDS Jetty 9.x -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>${javax.servlet.version}</version>
+    </dependency>
+
+    <!-- Build-time only: servicemix dom4j needs javax.xml.stream [1.0,2). Do NOT
+         include this IU in rcp.feature — shipping it next to Equinox causes a
+         uses-constraint failure on connection.core at runtime. -->
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+      <version>${geronimo.stax.version}</version>
+    </dependency>
+
+    <!-- SLF4J nop binding satisfies org.slf4j.impl while resolving slf4j.api in the TP -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>${org.slf4j.version}</version>
+    </dependency>
+
+    <!-- Required by Eclipse 4.37 SWT SVG support (org.eclipse.swt.svg) -->
+    <dependency>
+      <groupId>com.github.weisj</groupId>
+      <artifactId>jsvg</artifactId>
+      <version>${jsvg.version}</version>
+    </dependency>
+
+    <!-- Hamcrest 2.x replaces Orbit org.hamcrest.library / org.hamcrest.core -->
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>${org.hamcrest.version}</version>
     </dependency>
 
     <!-- Commons jars -->
@@ -83,13 +125,13 @@
     <!-- Bouncycastle modules -->
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
+      <artifactId>bcprov-jdk18on</artifactId>
       <version>${org.bouncycastle.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpkix-jdk15on</artifactId>
+      <artifactId>bcpkix-jdk18on</artifactId>
       <version>${org.bouncycastle.version}</version>
     </dependency>
 

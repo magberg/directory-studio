@@ -29,12 +29,18 @@ import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.osgi.service.prefs.BackingStoreException;
 
 
 /**
@@ -56,6 +62,13 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 {
+    private static final String ADAC_PERSPECTIVE_ID =
+        "org.apache.directory.studio.adac.ui.perspective.AdacPerspective"; //$NON-NLS-1$
+
+    /** One-time switch from restored classic LDAP layout to ADAC shell. */
+    private static final String PREF_ADAC_SHELL_MIGRATED = "adacShellMigrated.v2"; //$NON-NLS-1$
+
+
     /**
      * Performs arbitrary initialization before the workbench starts running.<br />
      * <br />
@@ -70,6 +83,10 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     {
         //enable the save/restore windows size & position feature
         configurer.setSaveAndRestore( true );
+
+        // Prefer ADAC even when a previous DEFAULT_PERSPECTIVE_ID preference exists
+        IEclipsePreferences uiPrefs = InstanceScope.INSTANCE.getNode( "org.eclipse.ui" ); //$NON-NLS-1$
+        uiPrefs.put( IWorkbenchPreferenceConstants.DEFAULT_PERSPECTIVE_ID, ADAC_PERSPECTIVE_ID );
 
         //enable help button in dialogs 
         TrayDialog.setDialogHelpAvailable( true );
@@ -105,7 +122,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
      */
     public String getInitialWindowPerspectiveId()
     {
-        return "org.apache.directory.studio.ldapbrowser.ui.perspective.BrowserPerspective"; //$NON-NLS-1$
+        // ADAC-like shell (stage 4); classic LDAP Browser remains available via Window → Perspective
+        return ADAC_PERSPECTIVE_ID;
     }
 
 
@@ -128,6 +146,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     {
         super.postStartup();
         removeDefaultJvmSetting();
+        migrateToAdacPerspectiveOnce();
     }
 
 
@@ -142,6 +161,73 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     {
         IEclipsePreferences pref = InstanceScope.INSTANCE.getNode( "org.eclipse.jdt.launching" );
         pref.remove( "org.eclipse.jdt.launching.PREF_VM_XML" );
+    }
+
+
+    /**
+     * Existing workspaces restore the last (classic LDAP) perspective via saveAndRestore.
+     * Switch once to the ADAC shell and reset its layout so v3 looks distinct from v2.
+     */
+    private void migrateToAdacPerspectiveOnce()
+    {
+        IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode( "org.apache.directory.studio" ); //$NON-NLS-1$
+        if ( prefs.getBoolean( PREF_ADAC_SHELL_MIGRATED, false ) )
+        {
+            return;
+        }
+
+        Display display = Display.getDefault();
+        if ( display == null )
+        {
+            return;
+        }
+
+        display.asyncExec( () ->
+        {
+            try
+            {
+                IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                if ( window == null )
+                {
+                    IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
+                    if ( windows == null || windows.length == 0 )
+                    {
+                        return;
+                    }
+                    window = windows[0];
+                }
+
+                IWorkbenchPage page = window.getActivePage();
+                if ( page == null )
+                {
+                    return;
+                }
+
+                IPerspectiveDescriptor adac = PlatformUI.getWorkbench().getPerspectiveRegistry()
+                    .findPerspectiveWithId( ADAC_PERSPECTIVE_ID );
+                if ( adac == null )
+                {
+                    return;
+                }
+
+                page.setPerspective( adac );
+                page.resetPerspective();
+
+                prefs.putBoolean( PREF_ADAC_SHELL_MIGRATED, true );
+                try
+                {
+                    prefs.flush();
+                }
+                catch ( BackingStoreException e )
+                {
+                    // best-effort; will retry next launch
+                }
+            }
+            catch ( Exception e )
+            {
+                // Do not block startup if perspective migration fails
+            }
+        } );
     }
 
 }

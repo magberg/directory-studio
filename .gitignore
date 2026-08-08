@@ -10,3 +10,8 @@ plugins/ldapservers.apacheds/resources/libs/
 tests/test.integration.ui/screenshots
 .DS_Store
 workspace
+# Local fork build/output (large binaries; see FORK.md)
+dist-local/
+release/
+# Tycho consumer POMs (generated during resolve)
+**/.tycho-consumer-pom.xml

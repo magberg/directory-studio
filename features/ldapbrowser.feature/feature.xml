@@ -2,7 +2,7 @@
 <feature
       id="org.apache.directory.studio.ldapbrowser.feature"
       label="Apache Directory Studio LDAP Browser"
-      version="2.0.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="Apache Software Foundation"
       plugin="org.apache.directory.studio.ldapbrowser.ui"
       image="studio.png">
@@ -282,6 +282,13 @@ http://www.apache.org/licenses/
 
    <plugin
          id="org.apache.directory.studio.common.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.directory.studio.adac.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

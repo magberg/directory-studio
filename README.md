@@ -19,19 +19,43 @@ under the License. -->
 
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/apache/directory-studio/badge)](https://api.securityscorecards.dev/projects/github.com/apache/directory-studio)
 
-# Apache Directory Studio (TM)
+# Apache Directory Studio (TM) — modernize fork
+
+> **Fork notice:** This tree is based on [Apache Directory Studio](https://github.com/apache/directory-studio)
+> (Apache License 2.0). It is **not** an official ASF release. See [FORK.md](./FORK.md) for baseline,
+> versioning, Apple Silicon notes, and the dependency inventory.
 
 The Eclipse-based LDAP browser and directory client.
 
 Apache Directory Studio is a complete directory tooling platform intended to be used with any LDAP server however it is particularly designed for use with ApacheDS. It is an Eclipse RCP application, composed of several Eclipse (OSGi) plugins, that can be easily upgraded with additional ones. These plugins can even run within Eclipse itself.
 
+**Modernize fork default UI:** the RCP opens an **ADAC-like** perspective (Navigation | Object list | Tasks). To use the classic LDAP Browser layout: **Window → Perspective → Open Perspective → LDAP**. See [FORK.md](./FORK.md).
+
+**IDE note:** Cursor/VS Code Problems on this Tycho/OSGi tree are mostly phantom classpath noise. Use Maven/Tycho as compile truth; see [FORK.md](./FORK.md) § IDE / Cursor and [`.vscode/settings.json`](./.vscode/settings.json).
+
+## Quick start (Apple Silicon)
+
+After a product build (or using artifacts under `dist-local/` / `release/`):
+
+```bash
+brew install openjdk@25   # required: osgi.requiredJavaVersion=25
+./tools/macos/fix-macos-jvm.sh dist-local/ApacheDirectoryStudio.app
+open dist-local/ApacheDirectoryStudio.app
+```
+
+Or install from DMG: `release/*/ApacheDirectoryStudio-*-macosx.cocoa.aarch64.dmg`.
+
+Native `*-macosx.cocoa.aarch64.dmg` is produced by macOS packaging (`mvn -f installers/pom.xml -Pmacos …`). See [FORK_RELEASE.md](./FORK_RELEASE.md).
+
 ## Build from command line
 
 ### Prerequisites
 
-* JDK 11 or newer
-* Maven 3 or newer
-* Sufficient heap space for Maven: `export MAVEN_OPTS="-Xmx512m"`
+* **JDK 25** (compile + runtime baseline after stage 2)
+* Maven 3.9+ (Tycho 5.x)
+* Sufficient heap + DocBook XSLT limits:
+  `export MAVEN_OPTS="-Xmx2048m -Djdk.xml.entityExpansionLimit=0 -Djdk.xml.totalEntitySizeLimit=0"`
+  (also provided via `.mvn/jvm.config`)
 
 ### Build
 
@@ -39,15 +63,16 @@ You can use either of those two methods to build the project :
 
 #### Do it manually
 
-Build the 'Eclipse Target Platform' and generate MANIFEST.MF files first
+Generate the `.target` file, then build the 'Eclipse Target Platform' and MANIFEST.MF files:
 
+    ./tools/bootstrap-target.sh
     mvn -f pom-first.xml clean install
 
 Build the main eclipse artifacts using Tycho
 
-    mvn clean install
+    mvn clean install -DskipTests
 
-#### Use the script  (which runs the two previous commands)
+#### Use the script  (which runs the previous commands)
 
 On Linux / macOS :
 
@@ -60,8 +85,7 @@ or on Windows :
 ### Tests
 
 * Unit tests included in `src/test/java` of each plugin are executed automatically and run in 'test' phase
-* Core integration tests in `tests/test.integration.core` are executed automatically and run in 'integration-test' phase
-* UI integration tests based on SWTBot in `tests/test.integration.ui` are disabled by default. They can be enabled with `-Denable-ui-tests`. A failing test generates a screenshot. To not block the developer computer they can run within a virtual framebuffer:
+* Core / UI integration tests live under `tests/` and are **opt-in** via `-Pintegration-tests` (SWTBot/Orbit wiring on 4.37 still WIP). UI tests need `-Denable-ui-tests` and can use a virtual framebuffer:
 
     export DISPLAY=:99
     Xvfb :99 -screen 0 1024x768x16 &
@@ -110,7 +134,17 @@ During import some Maven plugin connectors need to be installed, accept the inst
 
 ### From command line
 
-The build produces binaries for all platforms. Archived versions can be found in `product/target/products/`, unpacked versions can be found below `product/target/products/org.apache.directory.studio.product` 
+The build produces binaries for all platforms. Archived versions can be found in `product/target/products/`, unpacked versions can be found below `product/target/products/org.apache.directory.studio.product`
+
+Fork release packaging (archives + DMGs + checksums):
+
+```bash
+mvn -f installers/pom.xml -Pmacos -Dstudio.macos.arch=all package   # on macOS
+./tools/assemble-release.sh
+# → release/3.0.0-SNAPSHOT/
+```
+
+See [FORK_RELEASE.md](./FORK_RELEASE.md) and [CHANGELOG.md](./CHANGELOG.md).
 
 ### Within Eclipse
 

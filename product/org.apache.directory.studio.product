@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Apache Directory Studio" uid="org.apache.directory.studio.product" id="org.apache.directory.studio.rcp.product" application="org.apache.directory.studio.rcp.application" version="2.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Apache Directory Studio" uid="org.apache.directory.studio.product" id="org.apache.directory.studio.rcp.product" application="org.apache.directory.studio.rcp.application" version="3.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.apache.directory.studio.rcp/resources/pictures/product_lg.gif"/>
@@ -26,7 +26,7 @@
 #-vm
 #/usr/lib/jvm/java-11-openjdk/bin/java
       </programArgs>
-      <vmArgs>-Dosgi.requiredJavaVersion=11
+      <vmArgs>-Dosgi.requiredJavaVersion=25
 ###
 #Uncomment_to_configure_heap_memory
 #https://directory.apache.org/studio/faqs.html#how-to-increase-the-heap-memory
@@ -243,7 +243,9 @@ http://www.apache.org/licenses/
 
    <features>
       <feature id="org.apache.directory.studio.rcp.feature"/>
-      <feature id="org.apache.directory.studio.nls.feature"/>
+      <!-- NLS (Oxygen Babel packs) omitted on Eclipse 4.37: Babel has no matching
+           language packs / host plugins (e.g. org.eclipse.osgi.services removed).
+           Revisit when a modern Babel train is available. -->
       <feature id="org.apache.directory.studio.apacheds.feature"/>
       <feature id="org.apache.directory.studio.ldapbrowser.feature"/>
       <feature id="org.apache.directory.studio.ldifeditor.feature"/>
@@ -254,15 +256,14 @@ http://www.apache.org/licenses/
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="org.eclipse.emf.common"/>
       <feature id="org.eclipse.platform"/>
-      <feature id="org.eclipse.ecf.filetransfer.feature"/>
-      <feature id="org.eclipse.equinox.p2.core.feature"/>
-      <feature id="org.eclipse.ecf.core.ssl.feature"/>
+      <!-- ECF filetransfer/ssl feature IUs removed upstream in SimRel 2025-09;
+           core + platform/p2 still pull the required ECF filetransfer bundles. -->
       <feature id="org.eclipse.ecf.core.feature"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.help"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
    </features>
 
    <configurations>
@@ -273,6 +274,9 @@ http://www.apache.org/licenses/
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <property name="osgi.instance.area.default" value="@user.home/.ApacheDirectoryStudio" />
       <property name="org.eclipse.update.reconcile" value="false" />
+      <!-- Versioned javax.xml.stream from the JDK/system bundle so servicemix
+           dom4j can resolve without shipping geronimo-stax (uses conflict). -->
+      <property name="org.osgi.framework.system.packages.extra" value="javax.xml.stream;version=&quot;1.0.1&quot;,javax.xml.stream.events;version=&quot;1.0.1&quot;,javax.xml.stream.util;version=&quot;1.0.1&quot;"/>
    </configurations>
 
    <preferencesInfo>

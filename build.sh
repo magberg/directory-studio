@@ -16,6 +16,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# This script do a full build of Studio (including the MANIFEST generation and the P2 local repository construction)
+# Full Studio build: bootstrap .target (Tycho 5), MANIFEST/P2 first phase, then Tycho.
 
-mvn -f pom-first.xml clean install && mvn clean install
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+"$ROOT/tools/bootstrap-target.sh"
+mvn -f "$ROOT/pom-first.xml" clean install || exit $?
+
+# Main TP pom disables default install; publish .target into local m2 so Tycho
+# (and partial -pl builds) can resolve org.apache.directory.studio.eclipse-trgt-platform:target.
+TARGET_FILE="$ROOT/eclipse-trgt-platform/org.apache.directory.studio.eclipse-trgt-platform.target"
+if [ -f "$TARGET_FILE" ]; then
+  mvn install:install-file \
+    -Dfile="$TARGET_FILE" \
+    -DgroupId=org.apache.directory.studio \
+    -DartifactId=org.apache.directory.studio.eclipse-trgt-platform \
+    -Dversion=3.0.0-SNAPSHOT \
+    -Dpackaging=target \
+    -DgeneratePom=false \
+    -DpomFile="$ROOT/eclipse-trgt-platform/pom.xml" || exit $?
+fi
+
+mvn -f "$ROOT/pom.xml" clean install

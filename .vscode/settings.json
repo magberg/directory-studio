@@ -1,0 +1,35 @@
+{
+    // P0/P1 — Tycho/OSGi: Problems panel is not compile truth; quiet JDT LS noise
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.jdt.ls.java.home": "/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-25",
+            "path": "/opt/homebrew/opt/openjdk@25/libexec/openjdk.jdk/Contents/Home",
+            "default": true
+        }
+    ],
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable",
+    "java.autobuild.enabled": false,
+    "java.errors.incompleteClasspath.severity": "ignore",
+    "java.compile.nullAnalysis.mode": "disabled",
+    "java.maven.downloadSources": false,
+    "java.maven.downloadJavadoc": false,
+    "files.watcherExclude": {
+        "**/target/**": true,
+        "**/.git/objects/**": true,
+        "**/dist-local/**": true,
+        "**/release/**": true
+    },
+    "search.exclude": {
+        "**/target": true,
+        "**/dist-local": true,
+        "**/release": true,
+        "**/.git": true
+    },
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true
+    }
+}

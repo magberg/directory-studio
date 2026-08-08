@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.directory.studio</groupId>
     <artifactId>org.apache.directory.studio.parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
   
@@ -113,11 +113,40 @@
               <goal>materialize-products</goal>
             </goals>
           </execution>
+          <!-- After strip-runtime-stax-conflict (package), archive in verify -->
           <execution>
             <id>archive-products</id>
+            <phase>verify</phase>
             <goals>
               <goal>archive-products</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!--
+        Dom4j pulls geronimo-stax at materialize time, but shipping it next to
+        Equinox causes a javax.xml.stream uses-constraint failure that prevents
+        connection.core (and thus all LDAP UI) from resolving. Strip before archive.
+      -->
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>strip-runtime-stax-conflict</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <echo message="Stripping geronimo-stax-api from materialized products (Equinox javax.xml.stream conflict)"/>
+                <exec executable="python3" failonerror="true" dir="${project.basedir}">
+                  <arg value="${project.basedir}/../tools/strip-geronimo-stax.py"/>
+                  <arg value="${project.build.directory}/products"/>
+                </exec>
+              </target>
+            </configuration>
           </execution>
         </executions>
       </plugin>

@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.apache.directory.studio</groupId>
     <artifactId>org.apache.directory.studio.plugins-parent</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -43,14 +43,11 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>antlr-maven-plugin</artifactId>
-        <configuration>
-          <grammars>*.g</grammars>
-        </configuration>
+        <!-- Disabled: SecurityManager removed in Java 24+. Sources committed as AntlrAcl*.java -->
         <executions>
           <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
+            <id>default</id>
+            <phase>none</phase>
           </execution>
         </executions>
       </plugin>

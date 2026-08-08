@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.directory.studio</groupId>
     <artifactId>org.apache.directory.studio.plugins-parent</artifactId>
-    <version>2.0.0.qualifier</version>
+    <version>3.0.0.qualifier</version>
     <relativePath>../pom-first.xml</relativePath>
   </parent>
 
@@ -45,15 +45,18 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>antlr-maven-plugin</artifactId>
-        <configuration>
-          <grammars>*.g</grammars>
-        </configuration>
-        
+        <!--
+          antlr-maven-plugin 2.2 uses SecurityManager, removed in Java 24+.
+          Generated sources are committed under src/main/java (.../AntlrAcl*.java).
+          Regenerate manually with JDK <=21 if Acl.g changes:
+            java -cp ~/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar antlr.Tool \
+              -o src/main/java/org/apache/directory/studio/openldap/config/acl/model \
+              src/main/antlr/Acl.g
+        -->
         <executions>
           <execution>
-            <goals>
-              <goal>generate</goal>
-            </goals>
+            <id>default</id>
+            <phase>none</phase>
           </execution>
         </executions>
       </plugin>

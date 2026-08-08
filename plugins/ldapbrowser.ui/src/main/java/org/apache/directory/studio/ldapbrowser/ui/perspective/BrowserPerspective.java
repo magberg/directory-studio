@@ -73,6 +73,7 @@ public class BrowserPerspective implements IPerspectiveFactory
 
         layout.addPerspectiveShortcut( BrowserUIConstants.PERSPECTIVE_SCHEMA_EDITOR );
         layout.addPerspectiveShortcut( BrowserUIConstants.PERSPECTIVE_LDAP );
+        layout.addPerspectiveShortcut( "org.apache.directory.studio.adac.ui.perspective.AdacPerspective" ); //$NON-NLS-1$
     }
 
 

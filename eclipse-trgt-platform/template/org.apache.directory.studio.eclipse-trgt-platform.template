@@ -22,10 +22,17 @@
 <target name="Apache Directory Studio Platform" sequenceNumber="486">
   <locations>
 
-    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      <!-- External jars -->
-      <unit id="bcprov" version="1.62.0"/>
-      <unit id="bcpkix" version="1.62.0"/>
+    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+      <!-- External jars (slicer: do not resolve optional SLF4J impl / Jetty chains from listed units) -->
+      <unit id="bcprov" version="${org.bouncycastle.bundleversion}"/>
+      <unit id="bcpkix" version="${org.bouncycastle.bundleversion}"/>
+      <unit id="javax.servlet-api" version="${javax.servlet.version}"/>
+      <!-- Build-time resolve for dom4j only; omit from rcp.feature (runtime uses conflict) -->
+      <unit id="org.apache.geronimo.specs.geronimo-stax-api_1.0_spec" version="${geronimo.stax.version}"/>
+      <unit id="slf4j.api" version="${org.slf4j.bundleversion}"/>
+      <unit id="slf4j.nop" version="${org.slf4j.bundleversion}"/>
+      <unit id="com.github.weisj.jsvg" version="${jsvg.version}"/>
+      <unit id="org.hamcrest" version="${org.hamcrest.version}"/>
       <unit id="org.apache.servicemix.bundles.antlr" version="2.7.7.5"/>
       <unit id="org.apache.servicemix.bundles.dom4j" version="2.1.3.1"/>
       <unit id="org.apache.servicemix.bundles.xpp3" version="1.1.4.c"/>
@@ -36,10 +43,10 @@
       <!-- Commons jars -->
       <unit id="org.apache.commons.commons-codec" version="${org.apache.commons.codec.bundleversion}"/>
       <unit id="org.apache.commons.commons-collections4" version="${org.apache.commons.collections4.bundleversion}"/>
-      <unit id="org.apache.commons.io" version="${org.apache.commons.io.bundleversion}"/>
+      <unit id="org.apache.commons.commons-io" version="${org.apache.commons.io.bundleversion}"/>
       <unit id="org.apache.commons.lang3" version="${org.apache.commons.lang3.bundleversion}"/>
       <unit id="org.apache.commons.commons-pool2" version="${org.apache.commons.pool.bundleversion}"/>
-      <unit id="org.apache.commons.commons-text" version="${org.apache.commons.text.bundleversion}"/>
+      <unit id="org.apache.commons.text" version="${org.apache.commons.text.bundleversion}"/>
 
       <!-- LDAP API modules -->
       <unit id="org.apache.directory.api.asn1.api" version="${org.apache.directory.api.bundleversion}"/>
@@ -110,40 +117,44 @@
       <repository location="${basedirUri}/target/repository"/>
     </location>
 
-    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      <unit id="org.eclipse.rcp.feature.group" version="4.24.0.v20220607-0700"/>
-      <unit id="org.eclipse.rcp.source.feature.group" version="4.24.0.v20220607-0700"/>
-      <unit id="org.eclipse.platform.feature.group" version="4.24.0.v20220607-0700"/>
-      <unit id="org.eclipse.platform.source.feature.group" version="4.24.0.v20220607-0700"/>
-      <unit id="org.eclipse.jdt.feature.group" version="3.18.1200.v20220607-0700"/>
-      <unit id="org.eclipse.jdt.source.feature.group" version="3.18.1200.v20220607-0700"/>
-      <unit id="org.eclipse.pde.feature.group" version="3.14.1200.v20220607-0700"/>
-      <unit id="org.eclipse.pde.source.feature.group" version="3.14.1200.v20220607-0700"/>
-      <unit id="org.eclipse.equinox.p2.user.ui.feature.group" version="2.4.1600.v20220518-1326"/>
-      <unit id="org.eclipse.equinox.executable.feature.group" version="3.8.1700.v20220509-0833"/>
-      <repository location="https://download.eclipse.org/eclipse/updates/4.24"/>
+    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+      <!-- Eclipse 2025-12 / 4.37 — version 0.0.0 resolves to latest IU in the repo -->
+      <unit id="org.eclipse.rcp.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.pde.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.equinox.p2.user.ui.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
+      <repository location="https://download.eclipse.org/eclipse/updates/4.37"/>
     </location>
 
-    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      <unit id="javax.xml.stream" version="1.0.1.v201004272200"/>
-      <unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
-      <unit id="org.slf4j.log4j" version="1.7.2.v20130115-1340"/>
-      <repository location="http://download.eclipse.org/tools/orbit/downloads/2020-12/"/>
+    <!-- SLF4J comes from the Eclipse platform / Orbit via RCP; no separate Orbit pin (DIRSTUDIO-1068) -->
+
+    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+      <unit id="org.eclipse.swtbot.eclipse.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.swtbot.junit5.feature.group" version="0.0.0"/>
+      <repository location="https://download.eclipse.org/technology/swtbot/snapshots"/>
     </location>
 
-    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      <unit id="org.eclipse.swtbot.eclipse.feature.group" version="3.0.0.202006031738"/>
-      <unit id="org.eclipse.swtbot.junit5.feature.group" version="3.0.0.202006031738"/>
-      <unit id="org.hamcrest.core" version="1.3.0.v20180420-1519"/>
-      <unit id="org.hamcrest.library" version="1.3.0.v20180524-2246"/>
-      <unit id="org.apache.log4j" version="1.2.15.v201012070815"/>
-      <repository location="http://download.eclipse.org/technology/swtbot/releases/3.0.0/"/>
+    <!-- Babel NLS dropped for stage 2 (Oxygen-era site); re-add when a 2025-12 Babel exists -->
+
+    <!-- EMF + ECF from SimRel 2025-09 (matches Eclipse 4.37 train) -->
+    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+      <unit id="org.eclipse.emf.common.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.emf.ecore.feature.group" version="0.0.0"/>
+      <unit id="org.eclipse.ecf.core.feature.feature.group" version="0.0.0"/>
+      <repository location="https://download.eclipse.org/releases/2025-09"/>
     </location>
 
-    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-      <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.babel.nls_eclipse_fr.feature.group" version="0.0.0"/>
-      <repository location="http://archive.eclipse.org/technology/babel/update-site/R0.15.1/oxygen"/>
+    <!-- Orbit 4.37: modern JUnit Jupiter BSNs (junit-jupiter-api, …) for integration tests -->
+    <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="false" type="InstallableUnit">
+      <unit id="junit-jupiter-api" version="0.0.0"/>
+      <unit id="junit-jupiter-params" version="0.0.0"/>
+      <unit id="junit-jupiter-engine" version="0.0.0"/>
+      <unit id="junit-platform-commons" version="0.0.0"/>
+      <unit id="junit-platform-engine" version="0.0.0"/>
+      <unit id="org.opentest4j" version="0.0.0"/>
+      <repository location="https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.37.0"/>
     </location>
 
   </locations>

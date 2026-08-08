@@ -39,7 +39,7 @@ We release the following artifacts:
     * dependencies
 * Product archives and installers for
     * Linux GTK 64bit tar.gz
-    * maxOS 64bit dmg
+    * macOS Intel (x86_64) and Apple Silicon (aarch64) DMG
     * Windows 64bit exe installer and zip
 * Userguides
 
@@ -60,12 +60,17 @@ Test the release build: rat check, javadoc and source jar generation, installer 
     mvn -f pom-first.xml clean install
     mvn -Papache-release,windows,macos -Duserguides clean install
 
-Note: During creation of the macOS installer (DMG) the ApacheDirectoryStudio.app is signed with the ASF "Developer ID Application" key. See https://issues.apache.org/jira/browse/INFRA-16978 for the process to get one.
+Note: During creation of the macOS installer (DMG) the ApacheDirectoryStudio.app is signed with `APPLE_SIGNING_ID` (ASF Developer ID for official releases). See https://issues.apache.org/jira/browse/INFRA-16978. If `APPLE_SIGNING_ID` is unset, the script applies an ad-hoc signature for local testing.
+
+Default DMG arch is Apple Silicon (`aarch64`). Build Intel or both:
+
+    mvn -Pmacos -Dstudio.macos.arch=x86_64 package
+    mvn -Pmacos -Dstudio.macos.arch=all package
 
 Test the notarization of the macOS installer (requires app-specific password generated at https://appleid.apple.com/):
 
     cd installers/macos/target
-    xcrun altool --notarize-app --primary-bundle-id "org.apache.directory.studio" --username "you@apache.org" --password "app-specific-password" --file ApacheDirectoryStudio-*.dmg
+    xcrun notarytool submit ApacheDirectoryStudio-*-macosx.cocoa.aarch64.dmg --apple-id "you@example.com" --team-id "TEAMID" --password "app-specific-password" --wait
 
 Wait for the successful notarization (email notification).
 

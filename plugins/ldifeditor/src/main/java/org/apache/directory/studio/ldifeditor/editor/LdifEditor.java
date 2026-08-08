@@ -286,7 +286,7 @@ public class LdifEditor extends TextEditor implements ILdifEditor, ConnectionUpd
                 public String[] getShowInTargetIds()
                 {
                     return new String[]
-                        { IPageLayout.ID_RES_NAV };
+                        { IPageLayout.ID_PROJECT_EXPLORER };
                 }
             };
         }

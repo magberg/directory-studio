@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.directory.studio</groupId>
     <artifactId>org.apache.directory.studio.plugins-parent</artifactId>
-    <version>2.0.0.qualifier</version>
+    <version>3.0.0.qualifier</version>
     <relativePath>../pom-first.xml</relativePath>
   </parent>
 
@@ -62,7 +62,7 @@
  org.apache.commons.codec.binary,
  org.apache.commons.codec.digest,
  org.bouncycastle.asn1,
- org.bouncycastle.x509.extension
+ org.bouncycastle.cert.jcajce
             </Import-Package>
             
             <Require-Bundle>

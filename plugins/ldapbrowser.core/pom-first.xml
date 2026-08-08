@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.directory.studio</groupId>
     <artifactId>org.apache.directory.studio.plugins-parent</artifactId>
-    <version>2.0.0.qualifier</version>
+    <version>3.0.0.qualifier</version>
     <relativePath>../pom-first.xml</relativePath>
   </parent>
 
@@ -79,7 +79,7 @@
                 <artifactItem>
                   <groupId>xerces</groupId>
                   <artifactId>xercesImpl</artifactId>
-                  <version>2.11.0</version>
+                  <version>${xerces.xercesimpl.version}</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>xml-apis</groupId>
@@ -128,7 +128,7 @@
             </Import-Package>
             
             <Require-Bundle>
- org.apache.commons.commons-text,
+ org.apache.commons.text,
  org.apache.directory.api.asn1.api;bundle-version="${org.apache.directory.api.bundleversion}",
  org.apache.directory.api.ldap.model;bundle-version="${org.apache.directory.api.bundleversion}",
  org.apache.directory.api.ldap.codec.core;bundle-version="${org.apache.directory.api.bundleversion}",
@@ -145,7 +145,7 @@
             <Embedded-Artifacts>lib/poi-3.9.jar;g="org.apache.poi";a="poi";v="3.9"</Embedded-Artifacts>
             <Bundle-ClassPath>.,
  lib/poi-3.9.jar,
- lib/xercesImpl-2.11.0.jar,
+ lib/xercesImpl-2.12.2.jar,
  lib/xml-apis-1.4.01.jar,
  lib/odfdom-java-0.8.8-incubating.jar,
  lib/simple-odf-0.7-incubating.jar</Bundle-ClassPath>
